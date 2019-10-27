@@ -36,3 +36,13 @@ def signup(request):
 @login_required(login_url='login')
 def profile(request, username):
     return render(request, 'profile/profile.html')
+
+
+def profile_view(request):
+    profile = Profile.get_profile_data()
+    profile_data = {
+        'profile': profile
+    }
+
+    return render('profile/profile.html', profile_data)
+
