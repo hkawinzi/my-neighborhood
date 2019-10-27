@@ -18,3 +18,7 @@ class Neighbourhood(models.Model):
     occupants_count = models.IntegerField()
 
 
+class Business(models.Model):
+    name = models.CharField(max_length=100)
+    email_adress = models.TextField()
+    user = models.ForeignKey(Neighbourhood, on_delete=models.CASCADE)
