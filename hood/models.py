@@ -11,7 +11,7 @@ class User(models.Model):
     date = models.DateField()
     location = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='picture/', blank=True)
-
+    contact_info = models.CharField(max_length=300, blank=True)
 
 class Neighbourhood(models.Model):
     name = models.CharField(max_length=70)
