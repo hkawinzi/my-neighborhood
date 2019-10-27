@@ -10,6 +10,7 @@ class User(models.Model):
     email = models.TextField()
     date = models.DateField()
     location = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='picture/', blank=True)
 
 
 class Neighbourhood(models.Model):
