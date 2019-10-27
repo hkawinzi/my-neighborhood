@@ -1,0 +1,11 @@
+virtual
+.idea
+.vscode
+/__pycache__
+.env
+app/__pycache__/
+awwards/__pycache__/
+app/migrations/__pycache__/
+awwards/__pycache__
+media
+
