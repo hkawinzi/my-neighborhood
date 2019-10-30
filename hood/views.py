@@ -110,3 +110,21 @@ def update_profile(request,id):
         form = UpdateProfileForm()
     return render(request,'profile/update_profile.html',{'user':user,'form':form})
 
+@login_required(login_url='/accounts/login/')
+def business(request,id):
+    businesses = Business.objects.filter(biz_hood=id)
+    current_hood = Neighbourhood.objects.get(id=id)
+    current_user = request.user
+    if request.method == 'POST':
+        form = NewBusinessForm(request.POST,request.FILES)
+        if form.is_valid():
+            biz = form.save(commit=False)
+            biz.biz_user=current_user
+            biz.biz_hood = current_hood
+            biz.save()
+            return redirect(business,id)
+    else:
+        form = NewBusinessForm()
+    return render(request,'business.html',{'user':current_user,'form':form,'hood':current_hood,'businesses':businesses})
+
+
