@@ -93,3 +93,20 @@ def user_profile(request,id):
     return render(request,'profile/profile.html',{'user':user,'profile':profile,'current_user':current_user,'posts':posts})
 
 
+# view function for the updating profile  page
+@login_required(login_url='/accounts/login/')
+def update_profile(request,id):
+
+    current_user = request.user
+    user = User.objects.get(id=id)
+    if request.method == 'POST':
+        form = UpdateProfileForm(request.POST,request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user_id=id
+            profile.save()
+            return redirect(profile1,id)
+    else:
+        form = UpdateProfileForm()
+    return render(request,'profile/update_profile.html',{'user':user,'form':form})
+
