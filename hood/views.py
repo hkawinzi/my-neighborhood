@@ -1,5 +1,5 @@
-from django.shortcuts import render,get_object_or_404
-from django.http  import HttpResponse,Http404,HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http  import HttpResponse, Http404, HttpResponseRedirect
 import datetime as dt
 from django.db.models import Sum
 from django.shortcuts import render, redirect
@@ -103,12 +103,12 @@ def update_profile(request, id):
     current_user = request.user
     user = User.objects.get(id=id)
     if request.method == 'POST':
-        form = UpdateProfileForm(request.POST,request.FILES)
+        form = UpdateProfileForm(request.POST, request.FILES)
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user_id = id
             profile.save()
-            return redirect(profile1, id)
+            return redirect(profile, id)
     else:
         form = UpdateProfileForm()
     return render(request, 'profile/update_profile.html', {'user': user, 'form': form})
@@ -120,7 +120,7 @@ def business(request, id):
     current_hood = Neighbourhood.objects.get(id=id)
     current_user = request.user
     if request.method == 'POST':
-        form = NewBusinessForm(request.POST,request.FILES)
+        form = NewBusinessForm(request.POST, request.FILES)
         if form.is_valid():
             biz = form.save(commit=False)
             biz.biz_user = current_user
