@@ -23,5 +23,5 @@ class NewBusinessForm(forms.ModelForm):
 class NewPostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ['owner','post_date','hood','profile']
+        exclude = ['owner', 'post_date', 'hood', 'profile']
 

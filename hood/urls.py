@@ -1,16 +1,21 @@
+from django.conf.urls import url
+from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path, include, url
-from . import views
 
-from .views import index, signup, Profile, edit_profile, upload, index
+
 urlpatterns = [
-    path('', home, name='home'),
-    path('signup/', signup, name='signup'),
-    path('upload/', upload, name='upload'),
-    path('profile/<username>/', Profile, name='profile'),
-    path('profile/<username>/settings', edit_profile, name='edit'),
-    path('account/', include('django.contrib.auth.urls')),
+url(r'^$', views.choose_hood,name='choose_hood'),
+url(r'^setup/hood$',views.setup_hood, name='setup_hood'),
+url(r'^hood/profile/(\d+)$',views.setup_profile,name='setup_profile'),
+url(r'^setup/hood/profile/',views.setup_profile_hood,name='setup_profile_hood'),
+url(r'^home/(\d+)$',views.home,name="home"),
+url(r'^profile/(\d+)$',views.user_profile,name='profile'),
+url(r'^profile/update/(\d+)$',views.update_profile,name='update_profile'),
+url(r'^business/(\d+)$',views.business, name='business'),
+url(r'^leave/hood$', views.leave_hood, name='left')
+
 ]
+
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
