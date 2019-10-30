@@ -1,13 +1,11 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from .models import Neighbourhood, Business, Profile
 
 
 class UpdateProfileForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ('name', 'user_id', 'hood_id', 'email', 'location')
+        model = Profile
+        fields = ('image', 'contact_info')
 
 
 class NewHoodForm(forms.ModelForm):
