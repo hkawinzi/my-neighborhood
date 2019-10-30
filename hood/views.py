@@ -1,49 +1,30 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import  login_required
-from django.contrib.auth import authenticate, login
-from .models import *
+from django.shortcuts import render,get_object_or_404
+from django.http  import HttpResponse,Http404,HttpResponseRedirect
+import datetime as dt
+from django.db.models import Sum
+from django.shortcuts import render,redirect
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from .forms import UpdateProfileForm, NewHoodForm,NewPostForm,NewBusinessForm
+from .models import Profile,Neighbourhood,Business,Post
 
-# Create your views here.
-def index(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
+
+def home(request,id):
+    current_user = request.user
+    hood = Neighbourhood.objects.get(id=id)
+    posts = Post.objects.filter(hood_id=id)
+    businesses = Business.objects.filter(biz_hood=id)
+    profile = Profile.objects.get(user=current_user)
+    if request.method == 'POST':
+        form = NewPostForm(request.POST,request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.user = request.user
+            post.owner=current_user
+            post.profile=profile
+            post.hood = hood
             post.save()
+            return redirect(home,id)
     else:
-        form = PostForm()
-    return render(request, 'index.html', {'posts': post, 'form': form})
-
-
-def signup(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('/')
-        else:
-            form = SignupForm()
-            register_form = {
-                'form': form,
-            }
-        return redirect(request, 'registration/signup.html', {'form': form})
-
-
-@login_required(login_url='login')
-def profile(request, username):
-    return render(request, 'profile/profile.html')
-
-
-def profile_view(request):
-    profile = Profile.get_profile_data()
-    profile_data = {
-        'profile': profile
-    }
-
-    return render('profile/profile.html', profile_data)
-
+        form = NewPostForm()
+    return render(request,'home.html',{'hood':hood,'form':form,'posts':posts,'businesses':businesses})
