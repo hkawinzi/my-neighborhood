@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path, include, url
 from . import views
 
-from .views import home, signup, Profile, edit_profile, upload, index
+from .views import index, signup, Profile, edit_profile, upload, index
 urlpatterns = [
     path('', home, name='home'),
     path('signup/', signup, name='signup'),

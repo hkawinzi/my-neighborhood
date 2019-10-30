@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http  import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 import datetime as dt
 from django.db.models import Sum
 from django.shortcuts import render, redirect
