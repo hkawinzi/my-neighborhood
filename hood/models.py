@@ -68,3 +68,15 @@ class Profile(models.Model):
         self.bio = bio
         self.save()
 
+
+class Post(models.Model):
+    post_title =  models.CharField(max_length =20)
+    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE,related_name="user_name")
+    profile = models.ForeignKey(Profile,null=True)
+    text = models.TextField(max_length =500)
+    hood  = models.ForeignKey('Neighbourhood', null=True,related_name='post_hood')
+    descriptive_picture = models.ImageField(upload_to = 'photos/', default='photos/default_post.jpg')
+    post_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.post_title

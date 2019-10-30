@@ -1,5 +1,5 @@
 from django import forms
-from .models import Neighbourhood, Business, Profile
+from .models import Neighbourhood, Business, Profile, Post
 
 
 class UpdateProfileForm(forms.ModelForm):
@@ -20,4 +20,8 @@ class NewBusinessForm(forms.ModelForm):
         fields = ('name', 'email_address')
 
 
+class NewPostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        exclude = ['owner','post_date','hood','profile']
 
