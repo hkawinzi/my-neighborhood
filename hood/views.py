@@ -20,19 +20,21 @@ def home(request,id):
         form = NewPostForm(request.POST,request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.owner=current_user
-            post.profile=profile
+            post.owner = current_user
+            post.profile = profile
             post.hood = hood
             post.save()
             return redirect(home,id)
     else:
         form = NewPostForm()
-    return render(request,'home.html',{'hood':hood,'form':form,'posts':posts,'businesses':businesses})
+    return render(request, 'home.html', {'hood': hood, 'form': form, 'posts': posts, 'businesses': businesses})
+
 
 @login_required(login_url='/accounts/login/')
 def setup_hood(request):
     try:
         profile = Profile.objects.get(user_id=request.user.id)
+
     except ObjectDoesNotExist:
             return redirect('setup_profile_hood')
     current_user = request.user
@@ -40,12 +42,45 @@ def setup_hood(request):
         form = NewHoodForm(request.POST,request.FILES)
         if form.is_valid():
             hood = form.save(commit=False)
-            hood.headman=current_user
+            hood.headman = current_user
             hood.save()
-            return redirect(home,hood.id)
+            return redirect(home, hood.id)
     else:
         form = NewHoodForm()
-    return render(request,'create_hood/new_hood.html',{'form':form,'user':current_user})
+    return render(request, 'create_hood/new_hood.html', {'form': form, 'user': current_user})
 
+
+@login_required(login_url='/accounts/login/')
+def setup_profile(request,id):
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except ObjectDoesNotExist:
+        current_user = request.user
+        hood = Neighbourhood.objects.get(id=id)
+        if request.method == 'POST':
+            form = UpdateProfileForm(request.POST,request.FILES)
+            if form.is_valid():
+                profile = form.save(commit=False)
+                profile.user_id = request.user.id
+                profile.neighbourhood=hood
+                profile.save()
+                hood.members_count+1
+                return redirect(home,id)
+        else:
+            form = UpdateProfileForm()
+    return render(request,'choose_hood/setup_hood_profile.html',{'form':form,'user':current_user,'hood':hood})
+
+
+@login_required(login_url='/accounts/login/')
+def choose_hood(request):
+    try:
+        profile = Profile.objects.get(user_id=request.user.id)
+        hood = Neighbourhood.objects.get(headman = request.user.id)
+        return redirect(home,hood.id)
+    except ObjectDoesNotExist:
+
+        hoods = Neighbourhood.objects.all()
+        current_user = request.user
+    return render(request,'choose_hood.html',{'hoods':hoods,'user':current_user})
 
 
