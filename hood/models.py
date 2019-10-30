@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class User(models.Model):
     name = models.CharField(max_length=30)
-    user_id = models.AutoField()
+    user_id = models.IntegerField()
     hood_id = models.IntegerField(blank=True, null=True)
     email = models.EmailField()
     date = models.DateField()
@@ -49,4 +49,24 @@ class Business(models.Model):
         self.update_business()
         self.save()
 
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='picture/', blank=True)
+    bio = models.TextField(default='')
+    posted_project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
+    contact_info = models.CharField(max_length=300, blank=True)
+
+    def __str__(self):
+        return self.bio
+
+    def save_profile(self):
+        self.save()
+
+    def delete_profile(self):
+        self.delete()
+
+    def update_bio(self, bio):
+        self.bio = bio
+        self.save()
 
