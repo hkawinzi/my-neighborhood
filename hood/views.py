@@ -128,3 +128,12 @@ def business(request,id):
     return render(request,'business.html',{'user':current_user,'form':form,'hood':current_hood,'businesses':businesses})
 
 
+def leave_hood(request):
+    user = Profile.objects.get(user=request.user)
+    user.delete()
+    try:
+        admin_hood = Neighbourhood.objects.get(headman=request.user)
+        admin_hood.delete()
+        return redirect(choose_hood)
+    except ObjectDoesNotExist:
+        return redirect(choose_hood)
