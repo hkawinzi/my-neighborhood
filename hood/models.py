@@ -53,8 +53,6 @@ class Business(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='picture/', blank=True)
-    bio = models.TextField(default='')
-    posted_project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
     contact_info = models.CharField(max_length=300, blank=True)
 
     def __str__(self):

@@ -6,14 +6,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import UpdateProfileForm, NewHoodForm, NewPostForm, NewBusinessForm
-from .models import Profile, Neighbourhood, Business, Post
+from .forms import UpdateProfileForm, NewHoodForm, NewBusinessForm
+from .models import Profile, Neighbourhood, Business
 
 
-def home(request, id):
+def index(request, id):
     current_user = request.user
     hood = Neighbourhood.objects.get(id=id)
-    posts = Post.objects.filter(hood_id=id)
     businesses = Business.objects.filter(biz_hood=id)
     profile = Profile.objects.get(user=current_user)
     if request.method == 'POST':
@@ -24,10 +23,15 @@ def home(request, id):
             post.profile = profile
             post.hood = hood
             post.save()
-            return redirect(home, id)
+            return redirect(index, id)
     else:
         form = NewPostForm()
-    return render(request, 'home.html', {'hood': hood, 'form': form, 'posts': posts, 'businesses': businesses})
+    return render(request, 'home.html', {'hood': hood, 'form': form, 'businesses': businesses})
+
+
+@login_required(login_url='login')
+def profile(request, username):
+    return render(request, 'profile/profile.html')
 
 
 @login_required(login_url='/accounts/login/')
@@ -44,7 +48,7 @@ def setup_hood(request):
             hood = form.save(commit=False)
             hood.headman = current_user
             hood.save()
-            return redirect(home, hood.id)
+            return redirect(index, hood.id)
     else:
         form = NewHoodForm()
     return render(request, 'create_hood/new_hood.html', {'form': form, 'user': current_user})
@@ -65,7 +69,7 @@ def setup_profile(request, id):
                 profile.neighbourhood=hood
                 profile.save()
                 hood.members_count+1
-                return redirect(home, id)
+                return redirect(index, id)
         else:
             form = UpdateProfileForm()
     return render(request, 'choose_hood/setup_hood_profile.html', {'form': form, 'user': current_user, 'hood': hood})
@@ -76,7 +80,7 @@ def choose_hood(request):
     try:
         profile = Profile.objects.get(user_id=request.user.id)
         hood = Neighbourhood.objects.get(headman = request.user.id)
-        return redirect(home, hood.id)
+        return redirect(index, hood.id)
     except ObjectDoesNotExist:
 
         hoods = Neighbourhood.objects.all()
@@ -89,8 +93,7 @@ def user_profile(request, id):
     current_user = request.user
     user = User.objects.get(id=id)
     profile = Profile.objects.get(user_id=id)
-    posts = Post.objects.filter(owner=id)
-    return render(request, 'profile/profile.html', {'user': user, 'profile': profile, 'current_user': current_user, 'posts': posts})
+    return render(request, 'profile/profile.html', {'user': user, 'profile': profile, 'current_user': current_user})
 
 
 # view function for the updating profile  page
@@ -110,8 +113,9 @@ def update_profile(request, id):
         form = UpdateProfileForm()
     return render(request, 'profile/update_profile.html', {'user': user, 'form': form})
 
+
 @login_required(login_url='/accounts/login/')
-def business(request,id):
+def business(request, id):
     businesses = Business.objects.filter(biz_hood=id)
     current_hood = Neighbourhood.objects.get(id=id)
     current_user = request.user
@@ -119,10 +123,10 @@ def business(request,id):
         form = NewBusinessForm(request.POST,request.FILES)
         if form.is_valid():
             biz = form.save(commit=False)
-            biz.biz_user=current_user
+            biz.biz_user = current_user
             biz.biz_hood = current_hood
             biz.save()
-            return redirect(business,id)
+            return redirect(business, id)
     else:
         form = NewBusinessForm()
     return render(request, 'business.html', {'user': current_user, 'form': form, 'hood': current_hood, 'businesses': businesses})
