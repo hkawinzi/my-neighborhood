@@ -28,3 +28,24 @@ def home(request,id):
     else:
         form = NewPostForm()
     return render(request,'home.html',{'hood':hood,'form':form,'posts':posts,'businesses':businesses})
+
+@login_required(login_url='/accounts/login/')
+def setup_hood(request):
+    try:
+        profile = Profile.objects.get(user_id=request.user.id)
+    except ObjectDoesNotExist:
+            return redirect('setup_profile_hood')
+    current_user = request.user
+    if request.method == 'POST':
+        form = NewHoodForm(request.POST,request.FILES)
+        if form.is_valid():
+            hood = form.save(commit=False)
+            hood.headman=current_user
+            hood.save()
+            return redirect(home,hood.id)
+    else:
+        form = NewHoodForm()
+    return render(request,'create_hood/new_hood.html',{'form':form,'user':current_user})
+
+
+
