@@ -84,3 +84,12 @@ def choose_hood(request):
     return render(request,'choose_hood.html',{'hoods':hoods,'user':current_user})
 
 
+@login_required(login_url='/accounts/login/')
+def user_profile(request,id):
+    current_user = request.user
+    user = User.objects.get(id=id)
+    profile = Profile.objects.get(user_id=id)
+    posts = Post.objects.filter(owner=id)
+    return render(request,'profile/profile.html',{'user':user,'profile':profile,'current_user':current_user,'posts':posts})
+
+
