@@ -72,9 +72,9 @@ class Profile(models.Model):
 class Post(models.Model):
     post_title = models.CharField(max_length =20)
     owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE,related_name="user_name")
-    profile = models.ForeignKey(Profile,null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length =500)
-    hood = models.ForeignKey('Neighbourhood', null=True,related_name='post_hood')
+    hood = models.ForeignKey('Neighbourhood', null=True,related_name='post_hood', on_delete=models.CASCADE)
     descriptive_picture = models.ImageField(upload_to = 'photos/', default='photos/default_post.jpg')
     post_date = models.DateTimeField(auto_now_add=True)
 

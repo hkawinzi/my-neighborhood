@@ -16,7 +16,7 @@ def index(request, id):
     businesses = Business.objects.filter(biz_hood=id)
     profile = Profile.objects.get(user=current_user)
     if request.method == 'POST':
-        form = NewPostForm(request.POST, request.FILES)
+        form = NewPostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.owner = current_user
@@ -43,7 +43,7 @@ def setup_hood(request):
         return redirect('setup_profile_hood')
     current_user = request.user
     if request.method == 'POST':
-        form = NewHoodForm(request.POST,request.FILES)
+        form = NewHoodForm(request.POST, request.FILES)
         if form.is_valid():
             hood = form.save(commit=False)
             hood.headman = current_user
@@ -62,13 +62,13 @@ def setup_profile(request, id):
         current_user = request.user
         hood = Neighbourhood.objects.get(id=id)
         if request.method == 'POST':
-            form = UpdateProfileForm(request.POST,request.FILES)
+            form = UpdateProfileForm(request.POST, request.FILES)
             if form.is_valid():
                 profile = form.save(commit=False)
                 profile.user_id = request.user.id
-                profile.neighbourhood=hood
+                profile.neighbourhood = hood
                 profile.save()
-                hood.members_count+1
+                hood.members_count + 1
                 return redirect(index, id)
         else:
             form = UpdateProfileForm()
@@ -79,7 +79,7 @@ def setup_profile(request, id):
 def choose_hood(request):
     try:
         profile = Profile.objects.get(user_id=request.user.id)
-        hood = Neighbourhood.objects.get(headman = request.user.id)
+        hood = Neighbourhood.objects.get(headman=request.user.id)
         return redirect(index, hood.id)
     except ObjectDoesNotExist:
 
@@ -99,7 +99,6 @@ def user_profile(request, id):
 # view function for the updating profile  page
 @login_required(login_url='/accounts/login/')
 def update_profile(request, id):
-
     current_user = request.user
     user = User.objects.get(id=id)
     if request.method == 'POST':
@@ -129,7 +128,8 @@ def business(request, id):
             return redirect(business, id)
     else:
         form = NewBusinessForm()
-    return render(request, 'business.html', {'user': current_user, 'form': form, 'hood': current_hood, 'businesses': businesses})
+    return render(request, 'business.html',
+                  {'user': current_user, 'form': form, 'hood': current_hood, 'businesses': businesses})
 
 
 def leave_hood(request):
